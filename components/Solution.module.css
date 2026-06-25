@@ -1,0 +1,91 @@
+.wrap { display: flex; flex-direction: column; gap: var(--s8); }
+
+/* ---- Hero ---- */
+.hero { max-width: 64ch; }
+.eyebrow {
+  display: inline-block;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-ink);
+  margin-bottom: var(--s3);
+}
+.bigText {
+  font-family: var(--font-display);
+  font-size: var(--t-3xl);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.lede {
+  margin-top: var(--s4);
+  color: var(--muted);
+  font-size: var(--t-md);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.actions {
+  margin-top: var(--s6);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+/* ---- Faux file / code block ---- */
+.file {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 1px 2px oklch(0.235 0.012 240 / 0.04);
+}
+.fileBar {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 10px var(--s4);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.dots { display: inline-flex; gap: 6px; }
+.dots i {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--line-strong);
+}
+.fileName {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+.copyMini {
+  margin-left: auto;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--primary-ink);
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.copyMini:hover { background: var(--primary-weak); }
+
+.code {
+  margin: 0;
+  padding: var(--s6) var(--s6);
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 2;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+@media (max-width: 980px) {
+  .bigText { font-size: var(--t-2xl); }
+  .code { padding: var(--s5) var(--s4); }
+}

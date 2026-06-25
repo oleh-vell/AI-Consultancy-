@@ -70,6 +70,20 @@ export interface Invoice {
   currency: string;
 }
 
+/** AI-generated engagement proposal, derived from the discovery answers. */
+export interface ProposedSolution {
+  /** One-line name for the proposed build, e.g. "Automated claims triage agent". */
+  headline: string;
+  /** 2–3 sentence plain-English description of what we'd build. */
+  summary: string;
+  /** The concrete steps / components, 3–5 items. */
+  approach: string[];
+  /** Suggested implementation stack, a few short labels. */
+  stack: string[];
+  /** The business impact, one sentence tied to the bottleneck. */
+  impact: string;
+}
+
 export interface Account {
   id: string;
   leadId: string;

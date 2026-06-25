@@ -37,6 +37,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
     load();
   }, [load]);
 
+  // The landing page is a standalone public surface — no dashboard chrome.
+  if (pathname === "/landing") {
+    return <>{children}</>;
+  }
+
   const queued = leads.filter((l) => l.status !== "promoted").length;
 
   const nav = [
@@ -71,17 +76,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-
-        <div className={styles.agent}>
-          <div className={styles.agentHead}>
-            <span className={styles.pulse} aria-hidden="true" />
-            <span>Autonomous agent</span>
-          </div>
-          <p className={styles.agentBody}>
-            Dialing the queue on schedule. No human in the loop — you're just
-            watching it work.
-          </p>
-        </div>
 
         <div className={styles.foot}>
           <div className={styles.user}>
