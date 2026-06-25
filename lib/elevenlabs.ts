@@ -104,6 +104,10 @@ export interface NormalizedConversation {
   status: string;
   /** True once the transcript is final and ready to promote. */
   done: boolean;
+  /** True once the call is over — whether it succeeded OR failed/was hung up. */
+  ended: boolean;
+  /** True when the call ended in a failure state (no answer, dropped, hangup). */
+  failed: boolean;
   /** "2m 47s" — derived from call_duration_secs. */
   duration: string;
   /** Mapped to DISCOVERY tags (bottleneck / leverage / timeline). */
@@ -131,7 +135,22 @@ export async function getConversation(
   return normalize(data, questions);
 }
 
+// Status reached once post-call processing finished and the transcript is final.
 const DONE_STATUSES = new Set(["done", "completed", "processed", "ended"]);
+// Terminal failure states: the call is over but produced no usable result —
+// the callee didn't answer, the line dropped, or they hung up before it settled.
+const FAILED_STATUSES = new Set([
+  "failed",
+  "error",
+  "canceled",
+  "cancelled",
+  "no_answer",
+  "no-answer",
+  "busy",
+  "expired",
+  "timeout",
+  "aborted",
+]);
 
 export function normalize(
   data: ElevenConversation,
@@ -146,10 +165,16 @@ export function normalize(
     text: t.message!.trim(),
   }));
 
+  const status = (data.status || "").toLowerCase();
+  const done = DONE_STATUSES.has(status);
+  const failed = FAILED_STATUSES.has(status);
+
   return {
     conversationId: data.conversation_id,
     status: data.status,
-    done: DONE_STATUSES.has((data.status || "").toLowerCase()),
+    done,
+    ended: done || failed,
+    failed,
     duration: formatDuration(data.metadata?.call_duration_secs),
     answers: extractAnswers(
       turns,

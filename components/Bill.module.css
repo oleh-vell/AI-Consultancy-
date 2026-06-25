@@ -42,6 +42,67 @@
 .issued strong { color: var(--ink); font-weight: 600; }
 .actionBtns { display: flex; gap: var(--s2); align-items: center; }
 
+.paypalPanel,
+.paypalPaid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s5);
+  padding: var(--s5);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+.paypalPaid {
+  justify-content: flex-start;
+  border-color: oklch(0.86 0.05 158);
+  background: var(--success-weak);
+}
+.paypalPaidMark {
+  flex: none;
+  width: 42px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  color: oklch(0.99 0.01 158);
+  background: var(--success);
+  font-weight: 700;
+  font-size: var(--t-xs);
+}
+.paypalTitle {
+  font-size: var(--t-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.paypalBody {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+.paypalBody strong { color: var(--ink); font-weight: 700; }
+.paypalAction {
+  flex: 0 0 min(330px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s2);
+}
+.paypalButtons {
+  min-height: 35px;
+  width: 100%;
+}
+.paypalStatus,
+.paypalError {
+  font-size: var(--t-xs);
+  line-height: 1.45;
+}
+.paypalStatus { color: var(--muted); }
+.paypalError { color: var(--danger); }
+
 .invoice {
   position: relative;
   padding: clamp(28px, 4vw, 48px);
@@ -189,7 +250,7 @@
   color: var(--muted);
   flex-wrap: wrap;
 }
-.stripeNote {
+.paypalNote {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -197,7 +258,20 @@
   color: var(--ink-soft);
 }
 
+@media (max-width: 720px) {
+  .paypalPanel,
+  .paypalPaid {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .paypalAction { flex-basis: auto; }
+}
+
 @media print {
-  .actions { display: none; }
+  .actions,
+  .paypalPanel,
+  .paypalPaid {
+    display: none;
+  }
   .invoice { border: none; box-shadow: none; }
 }

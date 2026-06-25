@@ -62,6 +62,10 @@ export async function startCall(
 export interface ConversationSnapshot {
   status: string;
   done: boolean;
+  /** Call is over — successfully OR via failure/hangup. */
+  ended: boolean;
+  /** Call ended without a usable result (no answer, dropped, early hangup). */
+  failed: boolean;
   duration: string;
   answers: DiscoveryAnswer[];
   transcript: TranscriptLine[];
@@ -84,6 +88,8 @@ export async function fetchConversation(
   return {
     status: json.status,
     done: !!json.done,
+    ended: !!json.ended,
+    failed: !!json.failed,
     duration: json.duration ?? "—",
     answers: json.answers ?? [],
     transcript: json.transcript ?? [],

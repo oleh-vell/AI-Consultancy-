@@ -27,6 +27,32 @@ export default function AccountPage({
     if (!loaded) load();
   }, [loaded, load]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedTab = params.get("tab");
+    if (
+      requestedTab === "activity" ||
+      requestedTab === "deck" ||
+      requestedTab === "bill"
+    ) {
+      setTab(requestedTab);
+    }
+  }, []);
+
+  const selectTab = (nextTab: Tab) => {
+    setTab(nextTab);
+    const params = new URLSearchParams(window.location.search);
+    if (nextTab === "activity") {
+      params.delete("tab");
+      params.delete("checkout");
+    } else {
+      params.set("tab", nextTab);
+      if (nextTab !== "bill") params.delete("checkout");
+    }
+    const query = params.toString();
+    window.history.pushState(null, "", query ? `?${query}` : window.location.pathname);
+  };
+
   if (!account) {
     if (!loaded) {
       return (
@@ -60,7 +86,7 @@ export default function AccountPage({
       </Link>
 
       <header className={styles.head}>
-        <Avatar initials={account.initials} hue={account.hue} size={56} />
+        <Avatar initials={account.initials} hue={account.hue} logo={account.logo} size={56} />
         <div className={styles.headText}>
           <div className={styles.titleRow}>
             <h1 className={styles.company}>{account.company}</h1>
@@ -84,7 +110,7 @@ export default function AccountPage({
             role="tab"
             aria-selected={tab === t.id}
             className={`${styles.tab} ${tab === t.id ? styles.tabActive : ""}`}
-            onClick={() => setTab(t.id)}
+            onClick={() => selectTab(t.id)}
           >
             {t.label}
             <span className={styles.tabMeta}>{t.meta}</span>

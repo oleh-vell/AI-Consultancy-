@@ -12,6 +12,7 @@ export interface Lead {
   callAt: string;        // "14:20"
   initials: string;
   hue: number;           // avatar tint
+  logo?: string | null;  // optional brand logo URL; null → initials
   status: LeadStatus;
 }
 
@@ -80,6 +81,7 @@ export interface Account {
   employees: string;
   initials: string;
   hue: number;
+  logo?: string | null;      // optional brand logo URL; null → initials
   promotedAt: number;        // timestamp
   callDuration: string;      // "2m 47s"
   answers: DiscoveryAnswer[];

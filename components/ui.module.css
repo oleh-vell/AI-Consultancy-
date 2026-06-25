@@ -1,14 +1,28 @@
 /* ============ Avatar ============ */
 .avatar {
+  position: relative;
   flex: none;
   display: grid;
   place-items: center;
   border-radius: 9px;
+  overflow: hidden;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: oklch(0.34 0.06 var(--ah));
   background: oklch(0.95 0.035 var(--ah));
   box-shadow: inset 0 0 0 1px oklch(0.88 0.04 var(--ah));
+}
+
+/* Brand logo overlays the initials; white tile keeps favicons legible.
+   If the image 404s, the initials underneath remain visible. */
+.avatarLogo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 16%;
+  background: #fff;
 }
 
 /* ============ Status pill ============ */

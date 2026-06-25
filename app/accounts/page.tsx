@@ -42,7 +42,7 @@ export default function AccountsPage() {
           {accounts.map((a) => (
             <li key={a.id}>
               <Link href={`/accounts/${a.id}`} className={styles.row}>
-                <Avatar initials={a.initials} hue={a.hue} size={46} />
+                <Avatar initials={a.initials} hue={a.hue} logo={a.logo} size={46} />
                 <div className={styles.identity}>
                   <span className={styles.company}>{a.company}</span>
                   <span className={styles.contact}>

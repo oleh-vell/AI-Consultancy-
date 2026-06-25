@@ -57,7 +57,7 @@ export default function LeadsPage() {
                 <tr key={lead.id} className={isDone ? styles.dimmed : ""}>
                   <td className={styles.thMain}>
                     <div className={styles.prospect}>
-                      <Avatar initials={lead.initials} hue={lead.hue} size={40} />
+                      <Avatar initials={lead.initials} hue={lead.hue} logo={lead.logo} size={40} />
                       <div className={styles.prospectText}>
                         <span className={styles.company}>{lead.company}</span>
                         <span className={styles.contact}>

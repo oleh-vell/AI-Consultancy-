@@ -28,6 +28,7 @@ interface LeadRow {
   call_at: string;
   initials: string;
   hue: number;
+  logo: string | null;
   status: LeadStatus;
 }
 
@@ -43,6 +44,7 @@ const toLead = (r: LeadRow): Lead => ({
   callAt: r.call_at,
   initials: r.initials,
   hue: r.hue,
+  logo: r.logo,
   status: r.status,
 });
 
@@ -92,6 +94,7 @@ interface AccountRow {
   employees: string;
   initials: string;
   hue: number;
+  logo: string | null;
   call_duration: string;
   summary: string | null;
   promoted_at: Date;
@@ -198,6 +201,7 @@ async function assemble(rows: AccountRow[]): Promise<Account[]> {
       employees: r.employees,
       initials: r.initials,
       hue: r.hue,
+      logo: r.logo,
       promotedAt: r.promoted_at.getTime(),
       callDuration: r.call_duration,
       answers: (answersByAcct.get(r.id) ?? []).map(
@@ -266,8 +270,8 @@ export async function promoteLead(input: {
     await c.query(
       `INSERT INTO accounts
          (id, lead_id, company, contact, role, location, industry, employees,
-          initials, hue, call_duration, summary)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+          initials, hue, logo, call_duration, summary)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
       [
         accountId,
         lead.id,
@@ -279,6 +283,7 @@ export async function promoteLead(input: {
         lead.employees,
         lead.initials,
         lead.hue,
+        lead.logo ?? null,
         input.duration,
         input.summary ?? null,
       ]

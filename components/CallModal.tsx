@@ -255,7 +255,7 @@ function Ringing({
       <div className={styles.ringAvatar}>
         <span className={styles.ringWave} />
         <span className={styles.ringWave} style={{ animationDelay: "0.6s" }} />
-        <Avatar initials={lead.initials} hue={lead.hue} size={84} />
+        <Avatar initials={lead.initials} hue={lead.hue} logo={lead.logo} size={84} />
       </div>
       <h2 className={styles.ringName}>{lead.contact}</h2>
       <p className={styles.ringMeta}>
@@ -279,7 +279,7 @@ function Ringing({
 function CallHeader({ lead, seconds }: { lead: Lead; seconds: number }) {
   return (
     <header className={styles.callHead}>
-      <Avatar initials={lead.initials} hue={lead.hue} size={38} />
+      <Avatar initials={lead.initials} hue={lead.hue} logo={lead.logo} size={38} />
       <div className={styles.callWho}>
         <span className={styles.callName}>{lead.contact}</span>
         <span className={styles.callSub}>{lead.company}</span>
@@ -349,7 +349,7 @@ function Wrapup({
   return (
     <div className={styles.wrap}>
       <div className={styles.wrapHead}>
-        <Avatar initials={lead.initials} hue={lead.hue} size={44} />
+        <Avatar initials={lead.initials} hue={lead.hue} logo={lead.logo} size={44} />
         <div>
           <h2 className={styles.wrapTitle}>{lead.company}</h2>
           <p className={styles.wrapSub}>Discovery complete · {answers.filter(Boolean).length} answers captured</p>

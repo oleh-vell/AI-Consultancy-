@@ -6,13 +6,13 @@
 -- ---------------------------------------------------------------------------
 -- Leads — the queue the agency would dial on its own.
 -- ---------------------------------------------------------------------------
-INSERT INTO leads (id, company, contact, role, location, industry, employees, phone, call_at, initials, hue, status) VALUES
-    ('ld_agicorp',   'AGI Corp',           'Oleh Velychko',      'CEO',                 'London, UK',          'Artificial intelligence', '12',  '+44 7477 212611',  '14:00', 'OV', 222, 'queued'),
-    ('ld_dragonfly', 'Dragonfly',          'Sven Sabas',         'Co-Founder / Co-CEO', 'London, UK',          'AI / automation',         '35',  '+44 20 7946 0421', '14:20', 'SS', 202, 'queued'),
-    ('ld_downing',   '10 Downing Street',  'David Gelberg',      'AI Innovation Fellow','Westminster, London', 'Government',              '500', '+44 20 7946 1180', '14:45', 'DG', 158, 'queued'),
-    ('ld_wassist',   'Wassist',            'Josh Warwick',       'Founder',             'London, UK',          'AI assistants',           '8',   '+44 20 7946 2255', '15:10', 'JW',  73, 'queued'),
-    ('ld_elyos',     'Elyos AI',           'Panos Stravopodis',  'Founder & CTO',       'London, UK',          'AI / energy',             '15',  '+44 161 496 0330', '15:40', 'PS',  27, 'queued'),
-    ('ld_bluewire',  'Blue Wire Capital',  'Jai Taylor',         'Principal',           'London, UK',          'Investment',              '40',  '+44 131 496 0712', '16:05', 'JT', 264, 'queued')
+INSERT INTO leads (id, company, contact, role, location, industry, employees, phone, call_at, initials, hue, status, logo) VALUES
+    ('ld_agicorp',   'AGI Corp',           'Oleh Velychko',      'CEO',                 'London, UK',          'Artificial intelligence', '12',  '+44 7477 212611',  '14:00', 'AGI', 222, 'queued', NULL),
+    ('ld_dragonfly', 'Dragonfly',          'Sven Sabas',         'Co-Founder / Co-CEO', 'London, UK',          'AI / automation',         '35',  '+44 20 7946 0421', '14:20', 'DF',  202, 'queued', 'https://www.google.com/s2/favicons?domain=askdragonfly.com&sz=128'),
+    ('ld_downing',   '10 Downing Street',  'David Gelberg',      'AI Innovation Fellow','Westminster, London', 'Government',              '500', '+44 20 7946 1180', '14:45', '10',  158, 'queued', 'https://www.google.com/s2/favicons?domain=gov.uk&sz=128'),
+    ('ld_wassist',   'Wassist',            'Josh Warwick',       'Founder',             'London, UK',          'AI assistants',           '8',   '+44 20 7946 2255', '15:10', 'WA',   73, 'queued', 'https://icons.duckduckgo.com/ip3/wassist.ai.ico'),
+    ('ld_elyos',     'Elyos AI',           'Panos Stravopodis',  'Founder & CTO',       'London, UK',          'AI / energy',             '15',  '+44 161 496 0330', '15:40', 'EL',   27, 'queued', 'https://www.google.com/s2/favicons?domain=elyos.ai&sz=128'),
+    ('ld_bluewire',  'Blue Wire Capital',  'Jai Taylor',         'Principal',           'London, UK',          'Investment',              '40',  '+44 131 496 0712', '16:05', 'BW',  264, 'queued', 'https://www.google.com/s2/favicons?domain=bluewirecapital.com&sz=128')
 ON CONFLICT (id) DO UPDATE SET
     company   = EXCLUDED.company,
     contact   = EXCLUDED.contact,
@@ -23,7 +23,8 @@ ON CONFLICT (id) DO UPDATE SET
     phone     = EXCLUDED.phone,
     call_at   = EXCLUDED.call_at,
     initials  = EXCLUDED.initials,
-    hue       = EXCLUDED.hue;
+    hue       = EXCLUDED.hue,
+    logo      = EXCLUDED.logo;
 
 -- ---------------------------------------------------------------------------
 -- Discovery script — the 2-3 questions the agent asks on the call.

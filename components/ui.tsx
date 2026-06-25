@@ -5,10 +5,12 @@ import styles from "./ui.module.css";
 export function Avatar({
   initials,
   hue,
+  logo,
   size = 36,
 }: {
   initials: string;
   hue: number;
+  logo?: string | null;
   size?: number;
 }) {
   return (
@@ -24,7 +26,10 @@ export function Avatar({
       }
       aria-hidden="true"
     >
+      {/* Initials sit underneath; a logo (when present) overlays them, and
+          shows through automatically if the image fails to load. */}
       {initials}
+      {logo ? <img src={logo} alt="" className={styles.avatarLogo} /> : null}
     </span>
   );
 }
