@@ -43,7 +43,6 @@ export default function LeadsPage() {
             <tr>
               <th className={styles.thMain}>Prospect</th>
               <th>Industry</th>
-              <th className={styles.center}>Size</th>
               <th>Call at</th>
               <th>Status</th>
               <th className={styles.right}></th>
@@ -70,7 +69,6 @@ export default function LeadsPage() {
                     <span className={styles.industry}>{lead.industry}</span>
                     <span className={styles.location}>{lead.location}</span>
                   </td>
-                  <td className={`${styles.center} tnum`}>{lead.employees}</td>
                   <td className="tnum">
                     <span className={styles.callAt}>{lead.callAt}</span>
                   </td>
