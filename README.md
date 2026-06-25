@@ -2,16 +2,34 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### 1. Database (local Postgres in Docker)
+
+The app is backed by Postgres — no seed data is compiled into the app, it all
+lives in the database. Bring it up, apply migrations, and load the seed rows:
+
+```bash
+cp .env.local.example .env.local   # first time only
+npm run db:setup                    # docker up + migrate + seed
+```
+
+`db:setup` is the one-shot. The individual steps are also available:
+
+| Script               | What it does                                            |
+| -------------------- | ------------------------------------------------------- |
+| `npm run db:up`      | Start the Postgres container (host port **5434**)       |
+| `npm run db:migrate` | Apply pending SQL files in `db/migrations`              |
+| `npm run db:seed`    | Load `db/seed.sql` (leads, discovery script, billing)   |
+| `npm run db:reset`   | Drop the schema, re-migrate, re-seed (clean slate)      |
+| `npm run db:down`    | Stop the container (keeps data)                         |
+| `npm run db:nuke`    | Stop the container **and delete the volume**            |
+
+The connection string is `DATABASE_URL` in `.env.local`. See `db/README.md`
+for the schema and how data flows through the app.
+
+### 2. Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

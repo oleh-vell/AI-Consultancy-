@@ -1,0 +1,40 @@
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.mark {
+  flex: none;
+  border-radius: 8px;
+  box-shadow: var(--sh-sm);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+/* Space Grotesk = the open FK-Grotesk twin Perplexity uses for its wordmark */
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+}
+
+.sub {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.md .name { font-size: 1.0625rem; margin-bottom: 3px; }
+.md .sub  { font-size: 0.625rem; }
+
+.sm .name { font-size: 0.95rem; margin-bottom: 2px; }
+.sm .sub  { font-size: 0.5625rem; }

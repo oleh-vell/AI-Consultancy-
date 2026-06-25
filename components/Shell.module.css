@@ -1,0 +1,189 @@
+.app {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s6) var(--s4);
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+}
+
+.brand {
+  padding: var(--s2) var(--s2) var(--s6);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 9px var(--s3);
+  border-radius: var(--r-md);
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: var(--t-md);
+  transition: background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.navItem:hover {
+  background: oklch(0.94 0.004 240);
+  color: var(--ink);
+}
+.navItem.active {
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: var(--sh-sm), inset 0 0 0 1px var(--line);
+}
+.navItem.active .navIcon { color: var(--primary); }
+
+.navIcon {
+  display: inline-flex;
+  color: var(--faint);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.navItem:hover .navIcon { color: var(--muted); }
+
+.navLabel { flex: 1; }
+
+.navCount {
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--muted);
+  background: oklch(0.93 0.004 240);
+  border-radius: var(--r-pill);
+}
+.active .navCount {
+  color: var(--primary-ink);
+  background: var(--primary-weak);
+}
+
+/* ---- Autonomous agent status ---- */
+.agent {
+  margin-top: var(--s6);
+  padding: var(--s4);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+.agentHead {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.agentBody {
+  font-size: var(--t-xs);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pulse {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  flex: none;
+}
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--success);
+  animation: ping 2.2s var(--ease-out) infinite;
+}
+@keyframes ping {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  80%, 100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ---- Foot ---- */
+.foot {
+  margin-top: auto;
+  padding-top: var(--s5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+.userAvatar {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: var(--t-xs);
+  font-weight: 600;
+}
+.userMeta { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.userName { font-size: var(--t-sm); font-weight: 600; color: var(--ink); }
+.userRole { font-size: var(--t-xs); color: var(--faint); }
+
+.reset {
+  padding: 6px 11px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.reset:hover { color: var(--danger); border-color: var(--danger-weak); background: var(--danger-weak); }
+
+/* ---- Main ---- */
+.main {
+  min-width: 0;
+  background: var(--bg);
+}
+
+@media (max-width: 880px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: relative;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s3);
+    padding: var(--s3) var(--s4);
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { padding: 0; margin-right: auto; }
+  .nav { flex-direction: row; }
+  .agent { display: none; }
+  .foot { margin: 0; padding: 0; }
+  .pulse { display: none; }
+}

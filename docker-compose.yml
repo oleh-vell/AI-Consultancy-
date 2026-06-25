@@ -1,0 +1,27 @@
+# Local Postgres for the AI Consultancy app.
+# Host port 5434 (5432/5433 are already taken on this machine) -> container 5432.
+#   npm run db:up      start the database
+#   npm run db:migrate apply SQL migrations in db/migrations
+#   npm run db:seed     load seed rows from db/seed.sql
+#   npm run db:setup    do all three in order
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: consultancy_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: consultancy
+      POSTGRES_PASSWORD: consultancy
+      POSTGRES_DB: consultancy
+    ports:
+      - "5434:5432"
+    volumes:
+      - consultancy_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U consultancy -d consultancy"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  consultancy_pgdata:

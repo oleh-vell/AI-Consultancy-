@@ -1,0 +1,107 @@
+.wrap { display: flex; flex-direction: column; gap: var(--s10); }
+
+.sectionTitle { font-size: var(--t-lg); font-weight: 600; }
+.sectionLede {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: var(--t-base);
+  max-width: 62ch;
+}
+
+.insights {
+  margin-top: var(--s5);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s3);
+}
+.insight {
+  padding: var(--s4) var(--s5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+.insightTag {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary-ink);
+}
+.insightQuote {
+  margin-top: var(--s2);
+  font-family: var(--font-serif);
+  font-size: var(--t-md);
+  line-height: 1.5;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* ---- Call + transcript ---- */
+.callSection {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--sh-sm);
+}
+.callBar {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4) var(--s5);
+  background: var(--sunken);
+  border-bottom: 1px solid var(--line);
+}
+.callIcon {
+  width: 34px; height: 34px; flex: none;
+  display: grid; place-items: center;
+  border-radius: var(--r-md);
+  color: var(--primary);
+  background: var(--primary-weak);
+}
+.callMeta { display: flex; flex-direction: column; line-height: 1.35; flex: 1; min-width: 0; }
+.callTitle { font-weight: 600; }
+.callSub { font-size: var(--t-sm); color: var(--muted); }
+.callBadge {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg);
+}
+
+.transcript {
+  padding: var(--s6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+.line { display: flex; flex-direction: column; gap: 4px; max-width: 80%; }
+.agent { align-self: flex-start; }
+.client { align-self: flex-end; align-items: flex-end; }
+.speaker {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.agent .speaker { color: var(--primary-ink); }
+.client .speaker { color: var(--muted); }
+.text {
+  padding: 10px 13px;
+  border-radius: 13px;
+  font-size: var(--t-md);
+  line-height: 1.55;
+}
+.agent .text {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+  color: var(--ink);
+}
+.client .text {
+  background: var(--ink);
+  color: var(--bg);
+  border-bottom-right-radius: 4px;
+}
