@@ -6,15 +6,14 @@ import {
 
 /**
  * POST /api/call
- * Body: { toNumber?, lead?: { company, industry, contact, ... } }
+ * Body: { lead?: { company, industry, contact, ... } }
  *
- * Fires the ElevenLabs outbound call. The lead's fields are passed through as
- * dynamic_variables so the agent greets them by name / references their industry.
+ * Fires the ElevenLabs outbound call to DEMO_TO_NUMBER only. The lead's fields
+ * are passed through as dynamic_variables so the agent references the prospect.
  * Returns { conversationId } — save it on the lead and poll /api/conversations/:id.
  */
 export async function POST(request: NextRequest) {
   let body: {
-    toNumber?: string;
     lead?: Record<string, string | undefined>;
   };
   try {
@@ -23,10 +22,10 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const toNumber = body.toNumber || process.env.DEMO_TO_NUMBER;
+  const toNumber = process.env.DEMO_TO_NUMBER;
   if (!toNumber) {
     return Response.json(
-      { error: "No toNumber provided and DEMO_TO_NUMBER is not set" },
+      { error: "DEMO_TO_NUMBER is not set" },
       { status: 400 }
     );
   }

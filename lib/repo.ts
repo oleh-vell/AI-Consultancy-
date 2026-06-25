@@ -28,7 +28,7 @@ interface LeadRow {
   call_at: string;
   initials: string;
   hue: number;
-  logo: string | null;
+  logo?: string | null;
   status: LeadStatus;
 }
 
@@ -50,7 +50,7 @@ const toLead = (r: LeadRow): Lead => ({
 
 export async function getLeads(): Promise<Lead[]> {
   const rows = await query<LeadRow>(
-    "SELECT * FROM leads ORDER BY call_at, created_at"
+    "SELECT * FROM leads ORDER BY created_at DESC, call_at"
   );
   return rows.map(toLead);
 }
@@ -69,6 +69,48 @@ export async function setLeadStatus(
     [id, status]
   );
   return rows[0] ? toLead(rows[0]) : null;
+}
+
+export async function addLeads(leads: Lead[]): Promise<Lead[]> {
+  if (leads.length === 0) return [];
+
+  const inserted: Lead[] = [];
+  await withTransaction(async (c) => {
+    for (const lead of leads) {
+      const { rows } = await c.query<LeadRow>(
+        `INSERT INTO leads
+           (id, company, contact, role, location, industry, employees, phone,
+            call_at, initials, hue, status)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+         ON CONFLICT (id) DO NOTHING
+         RETURNING *`,
+        [
+          lead.id,
+          lead.company,
+          lead.contact,
+          lead.role,
+          lead.location,
+          lead.industry,
+          lead.employees,
+          lead.phone,
+          lead.callAt,
+          lead.initials,
+          lead.hue,
+          lead.status,
+        ]
+      );
+      if (rows[0]) inserted.push(toLead(rows[0]));
+    }
+  });
+
+  return inserted;
+}
+
+export async function deleteAllLeads(): Promise<number> {
+  const rows = await query<{ count: string }>(
+    "WITH deleted AS (DELETE FROM leads RETURNING 1) SELECT count(*) FROM deleted"
+  );
+  return Number(rows[0]?.count ?? 0);
 }
 
 /* ---------------------------------------------------------------
@@ -94,7 +136,7 @@ interface AccountRow {
   employees: string;
   initials: string;
   hue: number;
-  logo: string | null;
+  logo?: string | null;
   call_duration: string;
   summary: string | null;
   promoted_at: Date;
@@ -270,8 +312,8 @@ export async function promoteLead(input: {
     await c.query(
       `INSERT INTO accounts
          (id, lead_id, company, contact, role, location, industry, employees,
-          initials, hue, logo, call_duration, summary)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+          initials, hue, call_duration, summary)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
       [
         accountId,
         lead.id,
@@ -283,7 +325,6 @@ export async function promoteLead(input: {
         lead.employees,
         lead.initials,
         lead.hue,
-        lead.logo ?? null,
         input.duration,
         input.summary ?? null,
       ]

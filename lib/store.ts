@@ -33,6 +33,11 @@ interface State {
     transcript?: TranscriptLine[]
   ) => Promise<string>;
   generateInvoice: (accountId: string) => Promise<void>;
+  previewLeads: (
+    mandate: string,
+    maxLeads?: number
+  ) => Promise<{ leads: Lead[]; queries: string[]; found: number }>;
+  addGeneratedLeads: (leads: Lead[]) => Promise<{ count: number }>;
   reset: () => Promise<void>;
 }
 
@@ -123,6 +128,25 @@ export const useStore = create<State>((set, get) => ({
         a.id === accountId ? { ...a, invoice } : a
       ),
     }));
+  },
+
+  previewLeads: async (mandate, maxLeads) => {
+    const json = await sendJSON("/api/leads", "POST", {
+      mandate,
+      ...(maxLeads ? { maxLeads } : {}),
+    });
+    return {
+      leads: Array.isArray(json.leads) ? json.leads : [],
+      queries: Array.isArray(json.queries) ? json.queries : [],
+      found: typeof json.found === "number" ? json.found : 0,
+    };
+  },
+
+  addGeneratedLeads: async (selected) => {
+    const json = await sendJSON("/api/leads", "POST", { leads: selected });
+    const leads = await getJSON("/api/leads");
+    set({ leads: leads.leads });
+    return { count: Array.isArray(json.leads) ? json.leads.length : 0 };
   },
 
   reset: async () => {
