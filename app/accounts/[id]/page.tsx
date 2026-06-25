@@ -7,9 +7,10 @@ import { Avatar } from "@/components/ui";
 import { Activity } from "@/components/Activity";
 import { Deck } from "@/components/Deck";
 import { Bill } from "@/components/Bill";
+import { Solution } from "@/components/Solution";
 import styles from "./account.module.css";
 
-type Tab = "activity" | "deck" | "bill";
+type Tab = "activity" | "deck" | "bill" | "solution";
 
 export default function AccountPage({
   params,
@@ -33,7 +34,8 @@ export default function AccountPage({
     if (
       requestedTab === "activity" ||
       requestedTab === "deck" ||
-      requestedTab === "bill"
+      requestedTab === "bill" ||
+      requestedTab === "solution"
     ) {
       setTab(requestedTab);
     }
@@ -74,6 +76,7 @@ export default function AccountPage({
     { id: "activity", label: "Activity", meta: `${account.transcript.length} events` },
     { id: "deck", label: "Pitch Deck", meta: `${account.deck.length} slides` },
     { id: "bill", label: "Bill", meta: account.invoice ? "Issued" : "Draft" },
+    { id: "solution", label: "Solutions", meta: "Spec ready" },
   ];
 
   return (
@@ -122,6 +125,7 @@ export default function AccountPage({
         {tab === "activity" && <Activity account={account} />}
         {tab === "deck" && <Deck account={account} />}
         {tab === "bill" && <Bill account={account} />}
+        {tab === "solution" && <Solution account={account} />}
       </div>
     </div>
   );

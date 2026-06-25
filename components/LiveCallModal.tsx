@@ -137,6 +137,41 @@ export function LiveCallModal({
     });
   }, [step, out, answers]);
 
+  /* ---- mic: transcribe the caller live from the laptop microphone ---- */
+  useEffect(() => {
+    if (phase !== "live" || !micSupported) return;
+    startMic((text, isFinal) => {
+      if (!acceptRef.current) return; // ignore the agent's own audio / dead air
+      const idx = qRef.current;
+      if (idx == null) return;
+      if (isFinal) {
+        setLiveAnswers((prev) => {
+          const n = [...prev];
+          n[idx] = ((n[idx] || "") + " " + text).trim();
+          liveAnswersRef.current = n;
+          return n;
+        });
+        setInterim("");
+      } else {
+        setInterim(text);
+      }
+    });
+    return () => stopMic();
+  }, [phase, micSupported, startMic, stopMic]);
+
+  /* attribute the mic's speech to the question currently being asked */
+  useEffect(() => {
+    qRef.current = current?.qIndex ?? null;
+    setInterim("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+  /* only capture speech once the agent has finished asking a question */
+  useEffect(() => {
+    acceptRef.current = phase === "live" && current?.qIndex != null && typed;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, step, typed]);
+
   /* ---- drive the agent through its script while the call is live ---- */
   useEffect(() => {
     if (phase !== "live" || !current || !typed) return;
@@ -145,12 +180,15 @@ export function LiveCallModal({
       const t = setTimeout(() => setStep((s) => s + 1), GREETING_DWELL_MS);
       return () => clearTimeout(t);
     }
-    // Question: advance the moment the caller's real answer surfaces, else dwell.
-    const wait = answerFor(current.qIndex) ? 1100 : QUESTION_DWELL_MS;
+    // Question: once the caller has said something, advance shortly after they
+    // pause (interim updates keep resetting this timer); else fall back to a dwell.
+    const idx = current.qIndex;
+    const spoke = !!liveAnswers[idx]?.trim() || !!answerFor(idx);
+    const wait = spoke ? 1900 : QUESTION_DWELL_MS;
     const t = setTimeout(() => setStep((s) => s + 1), wait);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, step, typed, answers]);
+  }, [phase, step, typed, answers, liveAnswers, interim]);
 
   const finish = useCallback(
     async (snap: ConversationSnapshot) => {
@@ -160,11 +198,37 @@ export function LiveCallModal({
       chime();
       try {
         await setLeadStatus(lead.id, "completed");
+        // Prefer ElevenLabs' finalized data; fall back to what we captured live
+        // in the browser if EL returned nothing usable (so the deck/activity is
+        // never blank after a real conversation).
+        const live = liveAnswersRef.current;
+        const elHasAnswers = snap.answers.some((a) => a.a);
+        const liveHasAnswers = live.some((a) => a?.trim());
+        const tags = ["bottleneck", "leverage", "timeline"];
+        const finalAnswers =
+          elHasAnswers || !liveHasAnswers
+            ? snap.answers
+            : tags.map((tag, i) => ({
+                q: agentLines[i + 1]?.text ?? "",
+                a: (live[i] || "").trim(),
+                tag,
+              }));
+        const finalTranscript: TranscriptLine[] =
+          snap.transcript.length > 0
+            ? snap.transcript
+            : agentLines.flatMap((l) =>
+                l.qIndex != null && live[l.qIndex]?.trim()
+                  ? [
+                      { speaker: "agent" as const, text: l.text },
+                      { speaker: "client" as const, text: live[l.qIndex].trim() },
+                    ]
+                  : [{ speaker: "agent" as const, text: l.text }]
+              );
         const id = await promoteLead(
           lead.id,
-          snap.answers,
+          finalAnswers,
           snap.duration,
-          snap.transcript // verbatim call transcript → Activity tab
+          finalTranscript
         );
         setAccountId(id);
         setPhase("wrapup");
@@ -175,6 +239,7 @@ export function LiveCallModal({
         setPhase("error");
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [lead.id, promoteLead, setLeadStatus]
   );
 
@@ -293,8 +358,11 @@ export function LiveCallModal({
               {agentLines.slice(0, step).map((line, i) => (
                 <div key={i} className={styles.exchange}>
                   <Bubble speaker="agent" text={line.text} />
-                  {line.qIndex != null && answerFor(line.qIndex) && (
-                    <Bubble speaker="client" text={answerFor(line.qIndex)} />
+                  {line.qIndex != null && displayAnswer(line.qIndex, false) && (
+                    <Bubble
+                      speaker="client"
+                      text={displayAnswer(line.qIndex, false)}
+                    />
                   )}
                 </div>
               ))}
@@ -304,8 +372,12 @@ export function LiveCallModal({
                   <Bubble speaker="agent" text={out} typing={!typed} />
                   {typed &&
                     current.qIndex != null &&
-                    (answerFor(current.qIndex) ? (
-                      <Bubble speaker="client" text={answerFor(current.qIndex)} />
+                    (displayAnswer(current.qIndex, true) ? (
+                      <Bubble
+                        speaker="client"
+                        text={displayAnswer(current.qIndex, true)}
+                        typing={!!interim}
+                      />
                     ) : (
                       <ListeningRow label={`${first} is answering…`} />
                     ))}
