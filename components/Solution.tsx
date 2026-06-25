@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Button } from "./ui";
-import type { Account } from "@/lib/types";
+import type { Account, ProposedSolution } from "@/lib/types";
+import { useSolution } from "@/lib/useSolution";
 import styles from "./Solution.module.css";
 
 /* ---------------------------------------------------------------
@@ -26,7 +27,29 @@ function projectSlug(company: string) {
   return `${base || "client"}-agent`;
 }
 
-function buildSpec(account: Account): string {
+/** The AI-proposed engagement, rendered as a markdown section for the spec. */
+function solutionSection(solution: ProposedSolution | null): string {
+  if (!solution) return "";
+  const approachList = solution.approach
+    .map((s, i) => `${i + 1}. ${s}`)
+    .join("\n");
+  const stack = solution.stack.length
+    ? `\n**Suggested stack** — ${solution.stack.join(" · ")}`
+    : "";
+
+  return `## Proposed solution — ${solution.headline}
+${solution.summary}
+
+**How we'd build it**
+${approachList}
+${stack}
+
+**Why it matters** — ${solution.impact}
+
+`;
+}
+
+function buildSpec(account: Account, solution: ProposedSolution | null): string {
   const bottleneck = answer(account, "bottleneck");
   const leverage = answer(account, "leverage");
   const timeline = answer(account, "timeline");
@@ -61,7 +84,7 @@ give that time back.
 - **Timeline & budget**
   > "${timeline}"
 
-## Goals
+${solutionSection(solution)}## Goals
 1. Automate the highest-frequency manual step named above end-to-end.
 2. Keep a human in the loop: the agent drafts, ${account.contact.split(" ")[0]}'s
    team approves, the system learns from each correction.
@@ -106,7 +129,11 @@ can actually read.
 }
 
 export function Solution({ account }: { account: Account }) {
-  const spec = useMemo(() => buildSpec(account), [account]);
+  const { solution, loading } = useSolution(account);
+  const spec = useMemo(
+    () => buildSpec(account, solution),
+    [account, solution]
+  );
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -145,12 +172,14 @@ export function Solution({ account }: { account: Account }) {
   return (
     <div className={styles.wrap}>
       <header className={styles.hero}>
-        <span className={styles.eyebrow}>Ship it</span>
+        <span className={styles.eyebrow}>
+          {loading ? "Drafting the proposed solution…" : "Ship it"}
+        </span>
         <h1 className={styles.bigText}>Copy this into Claude Code</h1>
         <p className={styles.lede}>
           A refined build spec, generated from {account.contact}&apos;s discovery
-          call. Paste it into Claude Code and let it build the engagement — the
-          goals, scope, and constraints are already dialled in.
+          call — with the proposed solution our AI drafted from the bottleneck
+          baked in. Paste it into Claude Code and let it build the engagement.
         </p>
         <div className={styles.actions}>
           <Button variant="primary" size="md" onClick={copy}>

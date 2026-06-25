@@ -1,6 +1,7 @@
 "use client";
 
 import type { Account } from "@/lib/types";
+import { useSolution } from "@/lib/useSolution";
 import styles from "./Activity.module.css";
 
 const TAG_LABEL: Record<string, string> = {
@@ -8,6 +9,36 @@ const TAG_LABEL: Record<string, string> = {
   leverage: "Highest leverage",
   timeline: "Timeline & budget",
 };
+
+function ProposedSolution({ account }: { account: Account }) {
+  const { solution, loading, error } = useSolution(account);
+
+  return (
+    <div className={styles.solution}>
+      <span className={styles.solutionHead}>
+        <span className={styles.solutionSpark} aria-hidden="true" />
+        Proposed solution
+      </span>
+
+      {loading && (
+        <span className={styles.solutionMuted}>
+          <span className={styles.solutionPulse} aria-hidden="true" />
+          Drafting…
+        </span>
+      )}
+
+      {error && !solution && (
+        <span className={styles.solutionMuted}>Couldn’t draft a proposal.</span>
+      )}
+
+      {solution && (
+        <p className={styles.solutionText}>
+          <strong>{solution.headline}.</strong> {solution.summary}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export function Activity({ account }: { account: Account }) {
   return (
@@ -26,6 +57,8 @@ export function Activity({ account }: { account: Account }) {
             </article>
           ))}
         </div>
+
+        <ProposedSolution account={account} />
       </section>
 
       <section className={styles.callSection}>
