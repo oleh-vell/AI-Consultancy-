@@ -20,6 +20,7 @@ export default function LeadsPage() {
   const leads = useStore((s) => s.leads);
   const previewLeads = useStore((s) => s.previewLeads);
   const addGeneratedLeads = useStore((s) => s.addGeneratedLeads);
+  const deleteLead = useStore((s) => s.deleteLead);
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   const [mandate, setMandate] = useState("");
   const [maxLeads, setMaxLeads] = useState("10");
@@ -30,6 +31,7 @@ export default function LeadsPage() {
   const [candidateLeads, setCandidateLeads] = useState<Lead[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [queries, setQueries] = useState<string[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const pending = leads.filter((l) => l.status === "queued" || l.status === "calling");
   const nextCall = pending[0]?.callAt;
@@ -96,6 +98,21 @@ export default function LeadsPage() {
         ? new Set()
         : new Set(candidateLeads.map((lead) => lead.id))
     );
+  };
+
+  const onDeleteLead = async (lead: Lead) => {
+    if (deletingId || lead.status === "calling") return;
+
+    setDeletingId(lead.id);
+    setGenerateError(null);
+    try {
+      await deleteLead(lead.id);
+      if (activeLead?.id === lead.id) setActiveLead(null);
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : "Could not delete lead");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -224,19 +241,31 @@ export default function LeadsPage() {
                     <StatusPill status={lead.status} />
                   </td>
                   <td className={styles.right}>
-                    {isDone ? (
-                      <span className={styles.promotedNote}>In accounts ↗</span>
-                    ) : (
-                      <Button
-                        variant={isCalling ? "secondary" : "primary"}
-                        size="sm"
-                        iconLeft={<PhoneIcon />}
-                        onClick={() => setActiveLead(lead)}
-                        disabled={isCalling}
+                    <div className={styles.rowActions}>
+                      {isDone ? (
+                        <span className={styles.promotedNote}>In accounts ↗</span>
+                      ) : (
+                        <Button
+                          variant={isCalling ? "secondary" : "primary"}
+                          size="sm"
+                          iconLeft={<PhoneIcon />}
+                          onClick={() => setActiveLead(lead)}
+                          disabled={isCalling}
+                        >
+                          {isCalling ? "On call…" : "Call now"}
+                        </Button>
+                      )}
+                      <button
+                        aria-label={`Delete ${lead.company}`}
+                        className={styles.deleteLead}
+                        disabled={deletingId === lead.id || isCalling}
+                        onClick={() => onDeleteLead(lead)}
+                        title="Delete lead"
+                        type="button"
                       >
-                        {isCalling ? "On call…" : "Call now"}
-                      </Button>
-                    )}
+                        ×
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

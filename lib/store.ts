@@ -25,6 +25,7 @@ interface State {
 
   load: () => Promise<void>;
   setLeadStatus: (id: string, status: LeadStatus) => Promise<void>;
+  deleteLead: (id: string) => Promise<void>;
   promoteLead: (
     leadId: string,
     answers: DiscoveryAnswer[],
@@ -97,6 +98,16 @@ export const useStore = create<State>((set, get) => ({
     set({ leads: prev.map((l) => (l.id === id ? { ...l, status } : l)) });
     try {
       await sendJSON(`/api/leads/${id}`, "PATCH", { status });
+    } catch (err) {
+      set({ leads: prev, error: err instanceof Error ? err.message : null });
+    }
+  },
+
+  deleteLead: async (id) => {
+    const prev = get().leads;
+    set({ leads: prev.filter((l) => l.id !== id) });
+    try {
+      await sendJSON(`/api/leads/${id}`, "DELETE");
     } catch (err) {
       set({ leads: prev, error: err instanceof Error ? err.message : null });
     }

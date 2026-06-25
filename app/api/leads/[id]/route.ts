@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { setLeadStatus } from "@/lib/repo";
+import { deleteLead, setLeadStatus } from "@/lib/repo";
 import type { LeadStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +33,27 @@ export async function PATCH(
   } catch (err) {
     return Response.json(
       { error: err instanceof Error ? err.message : "Update failed" },
+      { status: 500 }
+    );
+  }
+}
+
+/** DELETE /api/leads/:id — remove one lead from the queue. */
+export async function DELETE(
+  _request: NextRequest,
+  ctx: RouteContext<"/api/leads/[id]">
+) {
+  const { id } = await ctx.params;
+
+  try {
+    const deleted = await deleteLead(id);
+    if (!deleted) {
+      return Response.json({ error: "Lead not found" }, { status: 404 });
+    }
+    return Response.json({ ok: true });
+  } catch (err) {
+    return Response.json(
+      { error: err instanceof Error ? err.message : "Delete failed" },
       { status: 500 }
     );
   }

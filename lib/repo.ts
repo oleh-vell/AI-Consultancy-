@@ -71,6 +71,14 @@ export async function setLeadStatus(
   return rows[0] ? toLead(rows[0]) : null;
 }
 
+export async function deleteLead(id: string): Promise<boolean> {
+  const rows = await query<{ id: string }>(
+    "DELETE FROM leads WHERE id = $1 RETURNING id",
+    [id]
+  );
+  return rows.length > 0;
+}
+
 export async function addLeads(leads: Lead[]): Promise<Lead[]> {
   if (leads.length === 0) return [];
 

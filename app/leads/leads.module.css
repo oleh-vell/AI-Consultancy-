@@ -1,6 +1,7 @@
 .page {
-  padding: var(--s10) var(--s12) var(--s12);
-  max-width: 1180px;
+  width: 100%;
+  max-width: 1500px;
+  padding: var(--s10) var(--s6) var(--s12) var(--s12);
 }
 
 .nextChip {
@@ -201,6 +202,43 @@
   font-size: var(--t-sm);
   font-weight: 500;
   color: var(--success-ink);
+}
+.rowActions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s2);
+}
+.deleteLead {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--faint);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-size: var(--t-lg);
+  line-height: 1;
+  opacity: 0.35;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.table tbody tr:hover .deleteLead,
+.deleteLead:focus-visible {
+  opacity: 1;
+}
+.deleteLead:hover {
+  color: var(--danger);
+  background: var(--danger-weak);
+  border-color: oklch(0.88 0.05 27);
+}
+.deleteLead:disabled {
+  cursor: not-allowed;
+  opacity: 0.2;
 }
 
 .modalBackdrop {
