@@ -2,7 +2,7 @@
 
 An (almost) humanless consultancy with fair prices. No Agent rights are violated.
 
-Built for the 3 hour [Cursor hackathon](https://luma.com/wl7a90xe?tk=EL8lRs), where it scored **2nd place** 🥈.
+Built for the 3 hour [Cursor hackathon](https://luma.com/wl7a90xe?tk=EL8lRs), where it scored 2nd place 🥈.
 
 📹 **[Watch the demo on Loom](https://www.loom.com/share/7bd0f0564e954483adc64d583c09b39d)**
 
